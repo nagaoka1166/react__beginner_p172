@@ -1,78 +1,95 @@
 import React, { Component } from 'react';
-import {connect} from 'react-redux';
+import Rect from './Rect';
 import './App.css';
 
-function mappingState(state){
-    return state;
-}
 
 class App extends Component {
-    constructor(props){
-        super(props);
+  input = '';
+
+
+  msgStyle = {
+    fontSize:"20pt",
+    color:"#900",
+    margin:"20px 0px",
+    padding: "5px",
+  }
+
+ inputStyle = {
+     
+     fontSize: "12px",
+     padding: "5px"
+     
+ }
+
+
+  constructor(props){
+    super(props);
+    this.state = {
+      message:'type your name:'
     }
-    
-    render() {
-       return(
-        <div>
-           <h1>Redux</h1>
-           <Message />
-           <Button />
-        </div>
-       );
-    }
+    this.doChange = this.doChange.bind(this);
+    this.doSubmit = this.doSubmit.bind(this);
+  }
+
+
+  doChange(event) {
+    this.input = event.target.value;
+  }
+
+
+  doSubmit(event) {
+    this.setState({
+      message: 'Hello, ' + this.input + '!!'
+    });
+    event.preventDefault();
+  }
+  render(){
+    return <div>
+      <h1>React</h1>
+      <h2>{this.state.message}</h2>
+      <form onSubmit={this.doSubmit}>
+        <label>
+           <span style={this.inputStyle}></span>Message;
+           <input type="text" style={this.inputStyle}
+                 onChange={this.doChange} 
+                 required pattern="[A-Za=z_,.]+" />
+        </label>
+        <input type="submit" style={this.inputStyle} value="click" />
+     </form>
+    </div>;
+  }
+
+
 }
 
-App = connect() (App);
 
 class Message extends Component {
-    style = {
-        fontSize: "20pt",
-        padding: "20px 5px"
-        
+  li = {
+    fontSize:"16pt",
+    color:"#06",
+    margin:"0px",
+    padding: "0px",
+  }
+
+
+  render(){
+    let content = this.props.children;
+    let arr = content.split('。');
+    let arr2 = [];
+    for(let i = 0;i < arr.length;i++){
+      if (arr[i].trim() != ''){
+        arr2.push(arr[i]);
+      }
     }
-    render() {
-        return(
-         <p style={this.style}>
-           {this.props.message}: {this.props.counter}
-         </p>
-        );
-            
-        
-    }
+    let list = arr2.map((value,key)=>(
+      <li style={this.li} key={key}>{value}.</li>)
+    );
+    return <div>
+      <h2>{this.props.title}</h2>
+      <ol>{list}</ol>
+    </div>
+  }
 }
 
-Message = connect(mappingState) (Message);
 
-class Button extends Component {
-    style = {
-        fontSize:"16pt",
-        padding: "5px 10px"
-    }
-    constructor(props){
-        super(props);
-        this.doAction = this.doAction.bind(this);
-    }
-
-    doAction(e) {
-        if (e.ctrlKey){
-            this.props.dispatch({type:'DECREMENT'});
-        } else {
-            this.props.dispatch({type:'INCREMENT'});
-        }
-        
-    }
-    render() {
-        return(
-        <button style={this.style}
-             onClick={this.doAction}>
-        Click
-        </button>
-        );
-    }
-}
-
-Button =connect() (Button);
 export default App;
-
-
-                        
